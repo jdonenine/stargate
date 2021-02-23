@@ -53,6 +53,7 @@ public class MappingModel {
   /** @throws GraphqlErrorException if the model contains mapping errors */
   static MappingModel build(TypeDefinitionRegistry registry, ProcessingContext context) {
 
+    System.out.println("context: " + context);
     ImmutableMap.Builder<String, EntityMappingModel> entitiesBuilder = ImmutableMap.builder();
 
     // The Query type is always present (otherwise the GraphQL parser would have failed)
@@ -63,6 +64,13 @@ public class MappingModel {
     Optional<ObjectTypeDefinition> maybeSubscriptionType =
         getOperationType(registry, "subscription", "Subscription");
 
+    System.out.println(
+        "build mapping model for query: "
+            + queryType
+            + " mutation: "
+            + maybeMutationType
+            + " subscription: "
+            + maybeSubscriptionType);
     Set<ObjectTypeDefinition> typesToIgnore = new HashSet<>();
     typesToIgnore.add(queryType);
     maybeMutationType.ifPresent(typesToIgnore::add);
@@ -86,7 +94,9 @@ public class MappingModel {
     Map<String, EntityMappingModel> entities = entitiesBuilder.build();
 
     ImmutableList.Builder<OperationMappingModel> operationsBuilder = ImmutableList.builder();
+    System.out.println("queryType.getFieldDefinitions(): " + queryType.getFieldDefinitions());
     for (FieldDefinition query : queryType.getFieldDefinitions()) {
+      System.out.println("QueryMappingModel.build");
       QueryMappingModel.build(query, queryType.getName(), entities, context)
           .ifPresent(operationsBuilder::add);
     }

@@ -72,6 +72,15 @@ public class QueryMappingModel extends OperationMappingModel {
       String parentTypeName,
       Map<String, EntityMappingModel> entities,
       ProcessingContext context) {
+    System.out.println(
+        "QueryMappingModel.build, query: "
+            + query
+            + " , parentTypeName: "
+            + parentTypeName
+            + " , entities: "
+            + entities
+            + "context:"
+            + context);
 
     Type<?> returnType = query.getType();
     String entityName = (returnType instanceof TypeName) ? ((TypeName) returnType).getName() : null;
